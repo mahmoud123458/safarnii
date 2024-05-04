@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% load static %}
+{% block add %}
+<link rel="stylesheet" href="{% static 'CSS/details.css' %}">
+{% endblock add %}
+{% block content %}
+<!-- Start Details  Package -->
+
+<div class="package">
+  <div class="container">
+    <div class="details">
+      <h3>Crete</h3>
+      <span>{{ place.city }}</span>
+
+      <h2>Enjoy The Advance</h2>
+      <p>
+        {{ place.description }}
+      </p>
+    </div>
+    <div class="forms">
+      <div class="prices">
+        <div>
+          <span>Price</span>
+          <h4>From</h4>
+        </div>
+        <div>
+          <h3>{{ place.price }}</h3>
+        </div>
+      </div>
+
+      <div class="select">
+        <button id="bookForm" class="active" onclick="bookFun()">
+          Booking Form
+        </button>
+        <hr />
+        <button id="enquiryForm" onclick="enquiryFun()">
+          Enquiry Form
+        </button>
+      </div>
+
+      <div id="formBook" class="show">
+        <form method="POST">
+          {% csrf_token %}
+        <div class="date">
+          <h4>Date</h4>
+          <span>{{ place.date }}</span>
+        </div>
+        <div class="adults">
+          <div class="adult">
+            <h4>Adults</h4>
+            <span>Over 18 ({{ place.price }} EG )</span>
+          </div>
+          <div class="count">
+            <button onclick="increaseAdult()">+</button>
+            <span class="num" id="displayAdult">1</span>
+            <button onclick="decreaseAdult()">-</button>
+          </div>
+        </div>
+        <div class="child">
+          <div class="children">
+            <h4>Children</h4>
+            <span>Under 18 ({{ place.child_price }} EG)</span>
+          </div>
+          <div class="count">
+            <button onclick="increaseChild()">+</button>
+            <span class="num" id="displayChild">0</span>
+            <button onclick="decreaseChild()">-</button>
+          </div>
+        </div>
+
+        <p>Total Price:</p>
+        <div class="totalPrice">0</div>
+        <!-- Hidden input field to store total price -->
+        <input type="hidden" id="totalPriceInput" name="total_price" value="0">
+        {% bootstrap_form form %}
+        {% buttons %}
+        <button type="button" onclick="calculateTotalPriceAndSubmit()" class="btn btn-primary">Book now</button>
+        {% endbuttons %}
+      </form>
+      </div>
+
+
+      <form id="formEnquiry">
+        <input
+          type="text"
+          class="in"
+          placeholder="Crete - ID: 152"
+          readonly />
+        <input
+          type="text"
+          class="in"
+          placeholder="Enter your name and surname"
+          autofocus
+          required />
+        <input
+          type="email"
+          class="in"
+          placeholder="Enter your email"
+          required />
+        <textarea
+          type="text"
+          class="in"
+          rows="4"
+          placeholder="Your Message..."></textarea>
+        <input type="submit" value="Send Request" class="btn" />
+      </form>
+    </div>
+  </div>
+</div>
+<!-- End Details Package -->
+
+<script>
+  let thePrice = {{ place.price }};
+
+  function updateTotalPrice() {
+    let adults = parseInt(document.getElementById('displayAdult').innerText);
+    let children = parseInt(document.getElementById('displayChild').innerText);
+    let totalPrice = adults * thePrice + children * thePrice;
+    document.querySelector('.totalPrice').innerText = totalPrice;
+    // Update the value of the hidden input field
+    document.getElementById('totalPriceInput').value = totalPrice;
+  }
+
+  function increaseAdult() {
+    let displayAdult = document.getElementById('displayAdult');
+    let count = parseInt(displayAdult.innerText);
+    displayAdult.innerText = count + 1;
+    updateTotalPrice();
+  }
+
+  function decreaseAdult() {
+    let displayAdult = document.getElementById('displayAdult');
+    let count = parseInt(displayAdult.innerText);
+    if (count > 1) {
+      displayAdult.innerText = count - 1;
+      updateTotalPrice();
+    }
+  }
+
+  function increaseChild() {
+    let displayChild = document.getElementById('displayChild');
+    let count = parseInt(displayChild.innerText);
+    displayChild.innerText = count + 1;
+    updateTotalPrice();
+  }
+
+  function decreaseChild() {
+    let displayChild = document.getElementById('displayChild');
+    let count = parseInt(displayChild.innerText);
+    if (count > 0) {
+      displayChild.innerText = count - 1;
+      updateTotalPrice();
+    }
+  }
+
+  // Function to submit the form after calculating total price
+  function calculateTotalPriceAndSubmit() {
+    updateTotalPrice();
+    document.getElementById('formBook').submit();
+  }
+</script>
+{% endblock content %}

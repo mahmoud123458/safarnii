@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block add %}
+<link rel="stylesheet" href="{% static 'CSS/shop.css' %}">
+{% endblock add %}
+{% block content %}
+<div class="travel" id="travel">
+<div class="container" style="margin:5px">
+  
+<div class="box">
+  {% for place in places %}
+  <div class="package box-1">
+    <a href="{% url 'detail' slug=place.slug %}">
+    <div class="image">
+      <img src="{{place.image.url}}" alt="" />
+    </div>
+  </a>
+    <div class="time">
+      <i class="fa-sharp fa-solid fa-clock fa-xs"></i>
+      <span>{{place.duration}} {{place.period}}</span>
+      <i
+        class="fa-solid fa-envelope fa-xs"
+        onClick="showFormRequest()"
+      ></i>
+      <a href="#" title="map"
+        ><i class="fa-solid fa-map-location-dot fa-xs"></i
+      ></a>
+    </div>
+    <div class="text">
+       <!-- city name -->
+       <h3>{{place.city}}</h3>
+       <!-- country name -->
+       <p class="location">{{place.country}}</p>
+       <!-- continent name -->
+       <p class="continent asia">{{place.continent}}</p>
+      <p class="description">
+        {{place.description}}
+      </p>
+      <div class="price">
+        <a href="{% url 'detail' slug=place.slug %}">
+        <button class="btn">Details</button>
+      </a>
+        <p>EGP {{place.price}} <span>EGP {{place.discount}}</span></p>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+</div>
+</div>
+
+    {% endblock content %}
